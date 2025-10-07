@@ -1,0 +1,29 @@
+# Don't publish these to npm
+.env
+.env.*
+!.env.example
+
+# Source files (only publish dist/)
+src/
+tsconfig.json
+
+# Tests and benchmarks
+benchmark/
+scripts/
+
+# Documentation (keep README)
+docs/
+QUICKSTART.md
+PROJECT_SUMMARY.md
+STATUS.md
+EXAMPLE_OUTPUT.md
+
+# Development files
+.gitignore
+.npmignore
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
