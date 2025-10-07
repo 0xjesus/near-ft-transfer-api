@@ -2,10 +2,10 @@
   "name": "near-ft-transfer-api",
   "version": "1.0.0",
   "description": "High-performance FT transfer API for NEAR Protocol",
-  "main": "dist/server.js",
+  "main": "dist/src/server.js",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/server.js",
+    "start": "node dist/src/server.js",
     "dev": "ts-node src/server.ts",
     "benchmark:local": "ts-node benchmark/localnet.ts",
     "benchmark:testnet": "ts-node benchmark/testnet.ts",
