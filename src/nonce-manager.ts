@@ -1,5 +1,6 @@
 import { AccessKeyInfo } from './types';
 import * as nearAPI from 'near-api-js';
+import { logComponent } from './logger';
 
 export class NonceManager {
   private accessKeys: AccessKeyInfo[] = [];
@@ -17,7 +18,11 @@ export class NonceManager {
    * For this implementation, we'll simulate with the same key but track nonces separately.
    */
   async initialize(privateKey: string, keyCount: number): Promise<void> {
-    console.log(`[NONCE_MANAGER] Initializing ${keyCount} access keys for ${this.accountId}`);
+    logComponent(
+      'NONCE_MANAGER',
+      `Initializing ${keyCount} access keys for ${this.accountId}`,
+      { accountId: this.accountId, keyCount }
+    );
 
     const keyPair = nearAPI.utils.KeyPair.fromString(privateKey as any);
     const publicKey = keyPair.getPublicKey().toString();
@@ -30,7 +35,11 @@ export class NonceManager {
       public_key: publicKey,
     });
 
-    console.log(`[NONCE_MANAGER] Current nonce from network: ${accessKey.nonce}`);
+    logComponent(
+      'NONCE_MANAGER',
+      `Current nonce from network: ${accessKey.nonce}`,
+      { nonce: accessKey.nonce }
+    );
 
     // Create virtual access keys (all share the same underlying key but manage nonces separately)
     // In production, you'd create separate access keys on-chain
@@ -41,10 +50,18 @@ export class NonceManager {
         nonce: accessKey.nonce + i, // Offset nonces to avoid conflicts
         in_use: false,
       });
-      console.log(`[NONCE_MANAGER] Initialized access key ${i + 1}/${keyCount} with nonce ${accessKey.nonce + i}`);
+      logComponent(
+        'NONCE_MANAGER',
+        `Initialized access key ${i + 1}/${keyCount} with nonce ${accessKey.nonce + i}`,
+        { index: i + 1, keyCount, nonce: accessKey.nonce + i }
+      );
     }
 
-    console.log(`[NONCE_MANAGER] Initialized ${this.accessKeys.length} access keys`);
+    logComponent(
+      'NONCE_MANAGER',
+      `Initialized ${this.accessKeys.length} access keys`,
+      { total: this.accessKeys.length }
+    );
   }
 
   /**
@@ -60,7 +77,11 @@ export class NonceManager {
 
       if (!key.in_use) {
         key.in_use = true;
-        console.log(`[NONCE_MANAGER] Allocated access key ${this.currentKeyIndex} with nonce ${key.nonce}`);
+        logComponent(
+          'NONCE_MANAGER',
+          `Allocated access key ${this.currentKeyIndex} with nonce ${key.nonce}`,
+          { keyIndex: this.currentKeyIndex, nonce: key.nonce }
+        );
         return key;
       }
     } while (this.currentKeyIndex !== startIndex);
@@ -68,7 +89,12 @@ export class NonceManager {
     // If all keys are in use, just return the next one anyway
     const key = this.accessKeys[this.currentKeyIndex];
     this.currentKeyIndex = (this.currentKeyIndex + 1) % this.accessKeys.length;
-    console.log(`[NONCE_MANAGER] All keys in use, forcing allocation of key with nonce ${key.nonce}`);
+    logComponent(
+      'NONCE_MANAGER',
+      `All keys in use, forcing allocation of key with nonce ${key.nonce}`,
+      { nonce: key.nonce },
+      'warn'
+    );
     return key;
   }
 
@@ -80,7 +106,11 @@ export class NonceManager {
     if (key) {
       key.nonce += this.accessKeys.length; // Increment by number of keys to avoid conflicts
       key.in_use = false;
-      console.log(`[NONCE_MANAGER] Released access key, new nonce: ${key.nonce}`);
+      logComponent(
+        'NONCE_MANAGER',
+        `Released access key, new nonce: ${key.nonce}`,
+        { nonce: key.nonce }
+      );
     }
   }
 

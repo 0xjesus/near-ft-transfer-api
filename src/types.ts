@@ -9,6 +9,13 @@ export interface TransferResponse {
   status: 'queued' | 'processing' | 'sent' | 'confirmed' | 'failed';
   transaction_hash?: string;
   error?: string;
+  receiver_id?: string;
+  amount?: string;
+  memo?: string;
+  queued_at?: number;
+  processing_at?: number;
+  completed_at?: number;
+  latency_ms?: number;
 }
 
 export interface BatchTransfer {
@@ -50,4 +57,5 @@ export interface Config {
   maxConcurrentBatches: number;
   accessKeyCount: number;
   batchIntervalMs: number;
+  redisUrl?: string;
 }

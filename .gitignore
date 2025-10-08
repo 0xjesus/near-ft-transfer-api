@@ -46,3 +46,6 @@ neardev/
 tmp/
 temp/
 *.tmp
+
+# Proof/benchmark logs
+proof/

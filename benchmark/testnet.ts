@@ -54,7 +54,7 @@ async function runBenchmark(config: BenchmarkConfig): Promise<BenchmarkResult> {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            receiver_id: `recipient${currentIndex}.testnet`,
+            receiver_id: `nearquantum.near`,
             amount: '1000000000000000000', // 1 token with 18 decimals
             memo: `Testnet benchmark transfer ${currentIndex}`,
           }),

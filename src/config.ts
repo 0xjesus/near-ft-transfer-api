@@ -16,6 +16,7 @@ export function getConfig(): Config {
     maxConcurrentBatches: parseInt(process.env.MAX_CONCURRENT_BATCHES || '10', 10),
     accessKeyCount: parseInt(process.env.ACCESS_KEY_COUNT || '10', 10),
     batchIntervalMs: parseInt(process.env.BATCH_INTERVAL_MS || '100', 10),
+    redisUrl: process.env.REDIS_URL,
   };
 
   console.log('[CONFIG] Loaded configuration:', {
@@ -28,6 +29,7 @@ export function getConfig(): Config {
     maxConcurrentBatches: config.maxConcurrentBatches,
     accessKeyCount: config.accessKeyCount,
     batchIntervalMs: config.batchIntervalMs,
+    redisUrl: config.redisUrl || 'redis://localhost:6379 (default)',
   });
 
   return config;
