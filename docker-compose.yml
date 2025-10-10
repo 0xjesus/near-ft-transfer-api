@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    container_name: near-ft-api
+    ports:
+      - "3000:3000"
+    environment:
+      # NEAR Configuration (TESTNET)
+      - NETWORK=testnet
+      - RPC_URL=https://neart.lava.build:443
+      - SENDER_ACCOUNT_ID=${SENDER_ACCOUNT_ID}
+      - SENDER_PRIVATE_KEY=${SENDER_PRIVATE_KEY}
+      - FT_CONTRACT_ID=${FT_CONTRACT_ID}
+
+      # API Configuration
+      - PORT=3000
+      - API_HOST=0.0.0.0
+
+      # Performance Settings
+      - MAX_BATCH_SIZE=${MAX_BATCH_SIZE:-100}
+      - MAX_CONCURRENT_BATCHES=${MAX_CONCURRENT_BATCHES:-10}
+      - ACCESS_KEY_COUNT=${ACCESS_KEY_COUNT:-10}
+      - BATCH_INTERVAL_MS=${BATCH_INTERVAL_MS:-100}
+
+      # Redis
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - redis
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  redis:
+    image: redis:7-alpine
+    container_name: near-ft-redis
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+
+volumes:
+  redis-data:
